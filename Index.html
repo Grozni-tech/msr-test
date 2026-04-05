@@ -1,38 +1,20 @@
 <!DOCTYPE html>
-<html lang="hr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>MSR ČISTI TEST</title>
+    <title>MSR Test</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <h1>MSR ČISTI TEST</h1>
-    <div id="status">Provjera...</div>
-    <button onclick="testBazu()">Testiraj bazu</button>
-
+    <h1>MSR Test</h1>
+    <div id="res">Provjera...</div>
     <script>
-        // === TVOJI ISPRAVNI PODACI ===
-        const SUPABASE_URL = 'https://kewkqsdgrwjdlmumfhoi.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtld2txc2RncndqZGxtdW1maG9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODgwMTcsImV4cCI6MjA4OTc2NDAxN30.EDj8O2CwBgpQggWi5AxSgHWCllOQgOoT5zVXGUM-_6o';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function testBazu() {
-            document.getElementById('status').innerHTML = 'Šaljem zahtjev...';
-            try {
-                const { data, error } = await _supabase.from('skladiste').select('*');
-                if (error) throw error;
-                if (data && data.length > 0) {
-                    document.getElementById('status').innerHTML = '✅ USPJEH! ' + data.length + ' artikala. Prvi: ' + data[0].artikl_naziv;
-                } else {
-                    document.getElementById('status').innerHTML = '⚠️ Baza odgovara, ali nema podataka.';
-                }
-            } catch (e) {
-                document.getElementById('status').innerHTML = '❌ GREŠKA: ' + e.message;
-            }
-        }
-
-        // Pokreni test odmah pri učitavanju
-        testBazu();
+        const sb = supabase.createClient(
+            'https://kewkqsdgrwjdlmumfhoi.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtld2txc2RncndqZGxtdW1maG9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODgwMTcsImV4cCI6MjA4OTc2NDAxN30.EDj8O2CwBgpQggWi5AxSgHWCllOQgOoT5zVXGUM-_6o'
+        );
+        sb.from('skladiste').select('*', { count: 'exact', head: true })
+          .then(() => document.getElementById('res').innerText = '✅ USPJEH!')
+          .catch(e => document.getElementById('res').innerText = '❌ ' + e.message);
     </script>
 </body>
 </html>
